@@ -1,25 +1,156 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <title>Datesheet</title>
+    <title>Search Exams</title>
+    <style>
+        /* Basic styling for table and search bar */
+        table,
+        th,
+        td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            padding: 8px;
+        }
+
+        table {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        #suggestions {
+            border: 1px solid #ccc;
+            max-height: 200px;
+            overflow-y: auto;
+            position: absolute;
+            background-color: #fff;
+            width: 300px;
+            z-index: 1000;
+        }
+
+        .suggestion-item {
+            padding: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .suggestion-item:hover {
+            background-color: #f2f2f2;
+        }
+
+        .search-container {
+            position: relative;
+        }
+
+        .add-btn {
+            margin-left: 10px;
+            padding: 4px 8px;
+            cursor: pointer;
+        }
+    </style>
+    <script>
+        function searchCourses() {
+            const query = document.getElementById('searchInput').value;
+            if (query.length === 0) {
+                document.getElementById('suggestions').innerHTML = "";
+                return;
+            }
+            fetch("{% url 'search_courses' %}?query=" + encodeURIComponent(query))
+                .then(response => response.json())
+                .then(data => {
+                    let suggestionBox = document.getElementById('suggestions');
+                    suggestionBox.innerHTML = "";
+                    data.courses.forEach(course => {
+                        let div = document.createElement('div');
+                        div.classList.add('suggestion-item');
+                        div.innerHTML = `<span><strong>${course.course_code}</strong> - ${course.course_name} (${course.date} ${course.time})</span>`;
+                        let addBtn = document.createElement('button');
+                        addBtn.innerText = "Add";
+                        addBtn.classList.add('add-btn');
+                        addBtn.onclick = function (e) {
+                            e.stopPropagation();
+                            addExam(course);
+                        };
+                        div.appendChild(addBtn);
+                        suggestionBox.appendChild(div);
+                    });
+                })
+                .catch(error => console.error("Error fetching courses:", error));
+        }
+
+        function addExam(course) {
+            const form = document.createElement('form');
+            form.method = "post";
+            form.action = "{% url 'add_exam' %}";
+            const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            form.innerHTML = `
+                <input type="hidden" name="day" value="${course.day}">
+                <input type="hidden" name="date" value="${course.date}">
+                <input type="hidden" name="time" value="${course.time}">
+                <input type="hidden" name="course_code" value="${course.course_code}">
+                <input type="hidden" name="course_name" value="${course.course_name}">
+                <input type="hidden" name="csrfmiddlewaretoken" value="${csrftoken}">
+            `;
+            document.body.appendChild(form);
+            form.submit();
+        }
+    </script>
 </head>
+
 <body>
-    <h1>Datesheet</h1>
-    <form method="get">
-        <label for="courses">Select Courses:</label>
-        <select name="courses" id="courses" multiple>
-            {% for course in courses %}
-                <option value="{{ course }}">{{ course }}</option>
-            {% endfor %}
-        </select>
-        <button type="submit">Filter</button>
-    </form>
-    <div>
-        {{ datesheet|safe }}
+    <h1>Search for Exams</h1>
+    <div class="search-container">
+        <input type="text" id="searchInput" onkeyup="searchCourses()" placeholder="Enter course code or name"
+            autocomplete="off" style="width:300px; padding:8px;">
+        <div id="suggestions"></div>
     </div>
-    <form method="get" action="{% url 'download_datesheet' %}">
-        <input type="hidden" name="courses" value="{{ request.GET.courses }}">
-        <button type="submit">Download as PDF</button>
-    </form>
+
+    <h2>Selected Exams</h2>
+    {% if selected_exams %}
+    <table>
+        <tr>
+            <th>Day</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Course Code</th>
+            <th>Course Name</th>
+            <th>Action</th>
+        </tr>
+        {% for exam in selected_exams %}
+        <tr>
+            <td>{{ exam.day }}</td>
+            <td>{{ exam.date }}</td>
+            <td>{{ exam.time }}</td>
+            <td>{{ exam.course_code }}</td>
+            <td>{{ exam.course_name }}</td>
+            <td>
+                <form method="post" action="{% url 'delete_exam' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="date" value="{{ exam.date }}">
+                    <input type="hidden" name="time" value="{{ exam.time }}">
+                    <input type="hidden" name="course_code" value="{{ exam.course_code }}">
+                    <button type="submit">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p>No exams selected.</p>
+    {% endif %}
+
+    <p>
+        <a href="{% url 'download_datesheet' %}">Download PDF Datesheet</a>
+    </p>
+
+    <!-- Hidden CSRF token for AJAX form submissions -->
+    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
 </body>
+
 </html>
