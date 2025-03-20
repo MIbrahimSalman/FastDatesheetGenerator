@@ -7,6 +7,8 @@ import pandas as pd
 from reportlab.pdfgen import canvas
 from io import BytesIO
 from django.views.decorators.http import require_POST
+from django.template.loader import get_template
+from xhtml2pdf import pisa
 
 def clean_datesheet(file_path):
     """
@@ -135,24 +137,17 @@ def delete_exam(request):
 def download_datesheet(request):
     """
     Generates a PDF datesheet using the selected exams.
+    The PDF mirrors the web page layout (except for the Action column).
     """
     selected = request.session.get('selected_courses', [])
     if selected:
-        buffer = BytesIO()
-        p = canvas.Canvas(buffer)
-        y_position = 800
         sorted_exams = sorted(selected, key=lambda x: (x["date"], x["time"]))
-        for exam in sorted_exams:
-            line = f"{exam['date']} {exam['time']} - {exam['course_code']}: {exam['course_name']}"
-            p.drawString(100, y_position, line)
-            y_position -= 20
-            if y_position < 100:
-                p.showPage()
-                y_position = 800
-        p.showPage()
-        p.save()
-        buffer.seek(0)
-        response = HttpResponse(buffer, content_type='application/pdf')
+        template = get_template('pdf_datesheet.html')
+        html = template.render({'selected_exams': sorted_exams})
+        response = HttpResponse(content_type='application/pdf')
         response['Content-Disposition'] = 'attachment; filename="datesheet.pdf"'
+        pisa_status = pisa.CreatePDF(html, dest=response)
+        if pisa_status.err:
+            return HttpResponse("Error generating PDF", status=500)
         return response
     return HttpResponse("No exams selected.")

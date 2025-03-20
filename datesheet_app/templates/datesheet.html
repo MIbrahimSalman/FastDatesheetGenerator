@@ -1,25 +1,86 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Search Exams</title>
     <style>
-        /* Basic styling for table and search bar */
-        table,
-        th,
-        td {
-            border: 1px solid black;
-            border-collapse: collapse;
-            padding: 8px;
+        /* Overall page styling */
+        body {
+            font-family: sans-serif;
+            background-color: #f0f8ff;
+            /* Light blue background */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
 
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #007bff;
+            /* Blue heading */
+        }
+
+        h2 {
+            color: #007bff;
+        }
+
+        /* Updated table styling */
         table {
             width: 100%;
-            margin-bottom: 20px;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            border-right: 1px solid #ddd;
+        }
+
+        th:last-child,
+        td:last-child {
+            border-right: none;
         }
 
         th {
-            background-color: #f2f2f2;
+            background-color: #007bff;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #e6f7ff;
+        }
+
+        /* Search box styling */
+        .search-container {
+            position: relative;
+            margin: 0 auto;
+            width: 300px;
+        }
+
+        #searchInput {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
         }
 
         #suggestions {
@@ -28,8 +89,10 @@
             overflow-y: auto;
             position: absolute;
             background-color: #fff;
-            width: 300px;
+            width: 100%;
             z-index: 1000;
+            border-top: none;
+            border-radius: 0 0 4px 4px;
         }
 
         .suggestion-item {
@@ -44,14 +107,21 @@
             background-color: #f2f2f2;
         }
 
-        .search-container {
-            position: relative;
+        /* Button styling */
+        button,
+        .add-btn {
+            background-color: #007bff;
+            color: #fff;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 5px;
         }
 
-        .add-btn {
-            margin-left: 10px;
-            padding: 4px 8px;
-            cursor: pointer;
+        button:hover,
+        .add-btn:hover {
+            background-color: #0056b3;
         }
     </style>
     <script>
@@ -104,53 +174,59 @@
 </head>
 
 <body>
-    <h1>Search for Exams</h1>
-    <div class="search-container">
-        <input type="text" id="searchInput" onkeyup="searchCourses()" placeholder="Enter course code or name"
-            autocomplete="off" style="width:300px; padding:8px;">
-        <div id="suggestions"></div>
+    <div class="container">
+        <h1>Search for Exams</h1>
+        <div class="search-container">
+            <input type="text" id="searchInput" onkeyup="searchCourses()" placeholder="Enter course code or name"
+                autocomplete="off">
+            <div id="suggestions"></div>
+        </div>
+
+        <h2>Selected Exams</h2>
+        {% if selected_exams %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Day</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Course Code</th>
+                    <th>Course Name</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for exam in selected_exams %}
+                <tr>
+                    <td>{{ exam.day }}</td>
+                    <td>{{ exam.date }}</td>
+                    <td>{{ exam.time }}</td>
+                    <td>{{ exam.course_code }}</td>
+                    <td>{{ exam.course_name }}</td>
+                    <td>
+                        <form method="post" action="{% url 'delete_exam' %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="date" value="{{ exam.date }}">
+                            <input type="hidden" name="time" value="{{ exam.time }}">
+                            <input type="hidden" name="course_code" value="{{ exam.course_code }}">
+                            <button type="submit">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No exams selected.</p>
+        {% endif %}
+
+        <p style="text-align: center;">
+            <a href="{% url 'download_datesheet' %}" style="text-decoration: none; color: #007bff;">Download PDF
+                Datesheet</a>
+        </p>
+        <!-- Hidden CSRF token for AJAX form submissions -->
+        <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
     </div>
-
-    <h2>Selected Exams</h2>
-    {% if selected_exams %}
-    <table>
-        <tr>
-            <th>Day</th>
-            <th>Date</th>
-            <th>Time</th>
-            <th>Course Code</th>
-            <th>Course Name</th>
-            <th>Action</th>
-        </tr>
-        {% for exam in selected_exams %}
-        <tr>
-            <td>{{ exam.day }}</td>
-            <td>{{ exam.date }}</td>
-            <td>{{ exam.time }}</td>
-            <td>{{ exam.course_code }}</td>
-            <td>{{ exam.course_name }}</td>
-            <td>
-                <form method="post" action="{% url 'delete_exam' %}">
-                    {% csrf_token %}
-                    <input type="hidden" name="date" value="{{ exam.date }}">
-                    <input type="hidden" name="time" value="{{ exam.time }}">
-                    <input type="hidden" name="course_code" value="{{ exam.course_code }}">
-                    <button type="submit">Delete</button>
-                </form>
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
-    {% else %}
-    <p>No exams selected.</p>
-    {% endif %}
-
-    <p>
-        <a href="{% url 'download_datesheet' %}">Download PDF Datesheet</a>
-    </p>
-
-    <!-- Hidden CSRF token for AJAX form submissions -->
-    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
 </body>
 
 </html>
