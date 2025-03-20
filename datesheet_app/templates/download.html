@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Download Datesheet</title>
+</head>
+<body>
+    <h1>Download Datesheet</h1>
+    <form method="get" action="{% url 'download_datesheet' %}">
+        <input type="hidden" name="courses" value="{{ request.GET.courses }}">
+        <button type="submit">Download as PDF</button>
+    </form>
+</body>
+</html>

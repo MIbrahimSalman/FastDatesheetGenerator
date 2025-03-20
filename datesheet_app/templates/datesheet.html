@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Datesheet</title>
+</head>
+<body>
+    <h1>Datesheet</h1>
+    <form method="get">
+        <label for="courses">Select Courses:</label>
+        <select name="courses" id="courses" multiple>
+            {% for course in courses %}
+                <option value="{{ course }}">{{ course }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Filter</button>
+    </form>
+    <div>
+        {{ datesheet|safe }}
+    </div>
+    <form method="get" action="{% url 'download_datesheet' %}">
+        <input type="hidden" name="courses" value="{{ request.GET.courses }}">
+        <button type="submit">Download as PDF</button>
+    </form>
+</body>
+</html>
