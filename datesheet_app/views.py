@@ -53,7 +53,7 @@ def clean_datesheet(file_path):
                 })
     return courses
 
-@login_required
+# @login_required
 def upload_datesheet(request):
     if request.method == 'POST':
         form = DatesheetUploadForm(request.POST, request.FILES)
@@ -67,7 +67,7 @@ def upload_datesheet(request):
         form = DatesheetUploadForm()
     return render(request, 'upload.html', {'form': form})
 
-@login_required
+# @login_required
 def display_datesheet(request):
     """
     Renders the main page with a search bar for exams and shows the selected exams.
@@ -78,7 +78,7 @@ def display_datesheet(request):
     }
     return render(request, 'datesheet.html', context)
 
-@login_required
+# @login_required
 def search_courses(request):
     """
     AJAX endpoint to search courses based on the query (searches both course code and course name).
@@ -96,7 +96,7 @@ def search_courses(request):
     return JsonResponse({"courses": filtered})
 
 @require_POST
-@login_required
+# @login_required
 def add_exam(request):
     """
     Adds an exam to the selected courses in session.
@@ -116,7 +116,7 @@ def add_exam(request):
     return redirect('display_datesheet')
 
 @require_POST
-@login_required
+# @login_required
 def delete_exam(request):
     """
     Removes an exam from the selected courses in session.
@@ -133,7 +133,7 @@ def delete_exam(request):
     request.session['selected_courses'] = new_selected
     return redirect('display_datesheet')
 
-@login_required
+# @login_required
 def download_datesheet(request):
     """
     Generates a PDF datesheet using the selected exams.
