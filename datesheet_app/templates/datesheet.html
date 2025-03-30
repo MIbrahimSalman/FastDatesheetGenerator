@@ -14,16 +14,19 @@
             margin: 0;
             padding: 0;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
             min-height: 100vh;
         }
 
+        /* Container for datesheet and search functionality */
         .container {
-            width: 90%;
-            max-width: 1200px;
+            width: 95%;
+            max-width: 600px;
+            /* Fixed width for mobile */
             background-color: #fff;
-            padding: 20px;
+            padding: 15px;
+            margin: 20px 0;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
@@ -31,48 +34,21 @@
         h1 {
             text-align: center;
             color: #007bff;
-            /* Blue heading */
+            font-size: 1.5em;
         }
 
         h2 {
             color: #007bff;
-        }
-
-        /* Updated table styling */
-        table {
-            width: 100%;
-            border-collapse: collapse;
             margin-top: 20px;
-        }
-
-        th,
-        td {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-            border-right: 1px solid #ddd;
-        }
-
-        th:last-child,
-        td:last-child {
-            border-right: none;
-        }
-
-        th {
-            background-color: #007bff;
-            color: #fff;
-            font-weight: bold;
-        }
-
-        tbody tr:nth-child(even) {
-            background-color: #e6f7ff;
+            text-align: center;
         }
 
         /* Search box styling */
         .search-container {
             position: relative;
             margin: 0 auto;
-            width: 300px;
+            width: 100%;
+            max-width: 300px;
         }
 
         #searchInput {
@@ -107,6 +83,47 @@
             background-color: #f2f2f2;
         }
 
+        /* Fixed container for the datesheet table */
+        .table-container {
+            width: 100%;
+            max-width: 600px;
+            /* Same as container width */
+            max-height: 400px;
+            /* Fixed height */
+            overflow: auto;
+            /* Scroll if content exceeds fixed area */
+            margin-top: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        /* Table styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+            /* Force columns to stay inside container */
+        }
+
+        th,
+        td {
+            padding: 8px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+            word-wrap: break-word;
+            /* Ensure text breaks within cell */
+            font-size: 0.9em;
+        }
+
+        th {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #e6f7ff;
+        }
+
         /* Button styling */
         button,
         .add-btn {
@@ -117,11 +134,40 @@
             border-radius: 4px;
             cursor: pointer;
             margin-right: 5px;
+            font-size: 0.9em;
         }
 
         button:hover,
         .add-btn:hover {
             background-color: #0056b3;
+        }
+
+        /* Responsive adjustments for small screens */
+        @media (max-width: 600px) {
+            .container {
+                width: 90%;
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 1.3em;
+            }
+
+            h2 {
+                font-size: 1.1em;
+            }
+
+            th,
+            td {
+                font-size: 0.8em;
+                padding: 6px;
+            }
+
+            button,
+            .add-btn {
+                font-size: 0.8em;
+                padding: 6px 10px;
+            }
         }
     </style>
     <script>
@@ -184,43 +230,45 @@
 
         <h2>Selected Exams</h2>
         {% if selected_exams %}
-        <table>
-            <thead>
-                <tr>
-                    <th>Day</th>
-                    <th>Date</th>
-                    <th>Time</th>
-                    <th>Course Code</th>
-                    <th>Course Name</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for exam in selected_exams %}
-                <tr>
-                    <td>{{ exam.day }}</td>
-                    <td>{{ exam.date }}</td>
-                    <td>{{ exam.time }}</td>
-                    <td>{{ exam.course_code }}</td>
-                    <td>{{ exam.course_name }}</td>
-                    <td>
-                        <form method="post" action="{% url 'delete_exam' %}">
-                            {% csrf_token %}
-                            <input type="hidden" name="date" value="{{ exam.date }}">
-                            <input type="hidden" name="time" value="{{ exam.time }}">
-                            <input type="hidden" name="course_code" value="{{ exam.course_code }}">
-                            <button type="submit">Delete</button>
-                        </form>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Day</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Course Code</th>
+                        <th>Course Name</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for exam in selected_exams %}
+                    <tr>
+                        <td>{{ exam.day }}</td>
+                        <td>{{ exam.date }}</td>
+                        <td>{{ exam.time }}</td>
+                        <td>{{ exam.course_code }}</td>
+                        <td>{{ exam.course_name }}</td>
+                        <td>
+                            <form method="post" action="{% url 'delete_exam' %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="date" value="{{ exam.date }}">
+                                <input type="hidden" name="time" value="{{ exam.time }}">
+                                <input type="hidden" name="course_code" value="{{ exam.course_code }}">
+                                <button type="submit">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
         {% else %}
         <p>No exams selected.</p>
         {% endif %}
 
-        <p style="text-align: center;">
+        <p style="text-align: center; margin-top: 20px;">
             <a href="{% url 'download_datesheet' %}" style="text-decoration: none; color: #007bff;">Download PDF
                 Datesheet</a>
         </p>

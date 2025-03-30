@@ -18,9 +18,11 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from datesheet_app import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('datesheet_app.urls')),
+    path("datesheet/", views.datesheet_view, name="datesheet"),
     path('accounts/', include('django.contrib.auth.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

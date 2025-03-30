@@ -10,6 +10,10 @@ from django.views.decorators.http import require_POST
 from django.template.loader import get_template
 from xhtml2pdf import pisa
 
+def datesheet_view(request):
+    return render(request, "datesheet.html")  # Modify the template name if needed
+
+
 def clean_datesheet(file_path):
     """
     Reads the Excel file and extracts exam details including day, date, time, course code, and course name.
@@ -53,7 +57,7 @@ def clean_datesheet(file_path):
                 })
     return courses
 
-# @login_required
+@login_required
 def upload_datesheet(request):
     if request.method == 'POST':
         form = DatesheetUploadForm(request.POST, request.FILES)
