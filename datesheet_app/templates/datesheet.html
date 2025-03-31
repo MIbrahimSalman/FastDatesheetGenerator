@@ -10,7 +10,6 @@
         body {
             font-family: sans-serif;
             background-color: #f0f8ff;
-            /* Light blue background */
             margin: 0;
             padding: 0;
             display: flex;
@@ -19,28 +18,28 @@
             min-height: 100vh;
         }
 
-        /* Container for datesheet and search functionality */
+        /* Main container */
         .container {
             width: 95%;
             max-width: 600px;
-            /* Fixed width for mobile */
             background-color: #fff;
-            padding: 15px;
-            margin: 20px 0;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 1rem;
+            margin: 1.25rem 0;
+            border-radius: 0.5rem;
+            box-shadow: 0 0 0.625rem rgba(0, 0, 0, 0.1);
         }
 
         h1 {
             text-align: center;
             color: #007bff;
-            font-size: 1.5em;
+            font-size: clamp(1.2rem, 4vw, 1.5rem);
         }
 
         h2 {
             color: #007bff;
-            margin-top: 20px;
+            margin-top: 1.25rem;
             text-align: center;
+            font-size: clamp(1rem, 3vw, 1.25rem);
         }
 
         /* Search box styling */
@@ -53,30 +52,32 @@
 
         #searchInput {
             width: 100%;
-            padding: 8px;
+            padding: 0.5rem;
             border: 1px solid #ccc;
-            border-radius: 4px;
+            border-radius: 0.25rem;
             box-sizing: border-box;
+            font-size: clamp(0.9rem, 2vw, 1rem);
         }
 
         #suggestions {
             border: 1px solid #ccc;
-            max-height: 200px;
+            max-height: 12.5rem;
             overflow-y: auto;
             position: absolute;
             background-color: #fff;
             width: 100%;
             z-index: 1000;
             border-top: none;
-            border-radius: 0 0 4px 4px;
+            border-radius: 0 0 0.25rem 0.25rem;
         }
 
         .suggestion-item {
-            padding: 8px;
+            padding: 0.5rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
             cursor: pointer;
+            font-size: clamp(0.8rem, 2vw, 1rem);
         }
 
         .suggestion-item:hover {
@@ -87,14 +88,10 @@
         .table-container {
             width: 100%;
             max-width: 600px;
-            /* Same as container width */
-            max-height: 400px;
-            /* Fixed height */
             overflow: auto;
-            /* Scroll if content exceeds fixed area */
-            margin-top: 20px;
+            margin-top: 1.25rem;
             border: 1px solid #ddd;
-            border-radius: 4px;
+            border-radius: 0.25rem;
         }
 
         /* Table styling */
@@ -102,17 +99,50 @@
             width: 100%;
             border-collapse: collapse;
             table-layout: fixed;
-            /* Force columns to stay inside container */
+            /* Forces columns per colgroup widths */
         }
+
+        /* Define column widths using colgroup */
+        colgroup col:nth-child(1) {
+            width: 15%;
+        }
+
+        /* Day */
+        colgroup col:nth-child(2) {
+            width: 15%;
+        }
+
+        /* Date */
+        colgroup col:nth-child(3) {
+            width: 15%;
+        }
+
+        /* Time */
+        colgroup col:nth-child(4) {
+            width: 10%;
+        }
+
+        /* Course Code */
+        colgroup col:nth-child(5) {
+            width: 25%;
+        }
+
+        /* Course Name */
+        colgroup col:nth-child(6) {
+            width: 15%;
+        }
+
+        /* Action */
 
         th,
         td {
-            padding: 8px;
+            padding: 0.5rem;
             text-align: center;
+            /* Center-align text */
             border-bottom: 1px solid #ddd;
-            word-wrap: break-word;
-            /* Ensure text breaks within cell */
-            font-size: 0.9em;
+            white-space: nowrap;
+            /* Use a responsive font size that can shrink further */
+            font-size: clamp(0.5rem, 1vw, 0.8rem);
         }
 
         th {
@@ -129,12 +159,11 @@
         .add-btn {
             background-color: #007bff;
             color: #fff;
-            padding: 8px 12px;
+            padding: 0.5rem 0.75rem;
             border: none;
-            border-radius: 4px;
+            border-radius: 0.25rem;
             cursor: pointer;
-            margin-right: 5px;
-            font-size: 0.9em;
+            font-size: clamp(0.5rem, 1vw, 0.8rem);
         }
 
         button:hover,
@@ -142,31 +171,31 @@
             background-color: #0056b3;
         }
 
-        /* Responsive adjustments for small screens */
+        /* Responsive adjustments for very small screens */
         @media (max-width: 600px) {
             .container {
                 width: 90%;
-                padding: 10px;
+                padding: 0.75rem;
             }
 
             h1 {
-                font-size: 1.3em;
+                font-size: clamp(1rem, 4vw, 1.3rem);
             }
 
             h2 {
-                font-size: 1.1em;
+                font-size: clamp(0.9rem, 3vw, 1.1rem);
             }
 
             th,
             td {
-                font-size: 0.8em;
-                padding: 6px;
+                padding: 0.4rem;
+                font-size: clamp(0.5rem, 1vw, 0.8rem);
             }
 
             button,
             .add-btn {
-                font-size: 0.8em;
-                padding: 6px 10px;
+                padding: 0.4rem 0.6rem;
+                font-size: clamp(0.5rem, 1vw, 0.8rem);
             }
         }
     </style>
@@ -232,6 +261,14 @@
         {% if selected_exams %}
         <div class="table-container">
             <table>
+                <colgroup>
+                    <col style="width:15%;">
+                    <col style="width:15%;">
+                    <col style="width:15%;">
+                    <col style="width:15%;">
+                    <col style="width:25%;">
+                    <col style="width:15%;">
+                </colgroup>
                 <thead>
                     <tr>
                         <th>Day</th>
@@ -268,7 +305,7 @@
         <p>No exams selected.</p>
         {% endif %}
 
-        <p style="text-align: center; margin-top: 20px;">
+        <p style="text-align: center; margin-top: 1.25rem;">
             <a href="{% url 'download_datesheet' %}" style="text-decoration: none; color: #007bff;">Download PDF
                 Datesheet</a>
         </p>
