@@ -9,3 +9,5 @@ datesheet-mid2.xlsx
 #.pyc
 *.pyc
 *.pyo
+
+__pycache__

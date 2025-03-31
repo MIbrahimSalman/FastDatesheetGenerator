@@ -1,85 +1,47 @@
-# FastDatesheetGenerator
+# Fast Datesheet Generator
 
-## Project Description
+A Python tool that simplifies exam schedule management by generating datesheets in a structured array format.
 
-FastDatesheetGenerator is a Django-based web application that allows university administrators to upload an Excel file containing a university datesheet. The system extracts course codes from the uploaded file, displays them in a dropdown menu for students to select, shows a filtered table based on the selected courses, and allows users to download the customized datesheet as a PDF. Only the admin can upload new datesheets, and the previous one is automatically replaced.
+## Overview
 
-## Project Structure
+Fast Datesheet Generator automates the creation of exam datesheets by converting raw schedule data into a well-organized Python array in the `datesheet_data.py` file. This structured approach makes schedule data easier to access, manipulate, and integrate with other systems.
 
-- A Django project with one app, `datesheet_app`.
-- Uses pandas for reading Excel files.
-- Stores the uploaded file in a private directory.
-- Uses Django’s forms for uploading files.
-- Uses Django templates to display the datesheet.
-- Uses reportlab or xhtml2pdf to generate a downloadable PDF.
+## Features
 
-## Required Features
+- Converts raw schedule information into a standardized array format
+- Stores data in an easily importable Python file
+- Simplifies schedule management and integration with other systems
+- Reduces errors associated with manual data entry
+- Provides a consistent data structure for exam schedules
 
-1. **Upload System**
-   - Create a file upload form in Django where only the admin can upload an Excel file.
-   - When a new file is uploaded, delete the previous one to replace it.
-   - Store the uploaded file in `media/uploads/` (or a private location).
+## Usage
 
-2. **Extracting Course Codes**
-   - Read the uploaded Excel file using pandas and extract unique course codes.
-   - Store them in a list to populate a dropdown menu.
+1. Input your raw schedule data
+2. Run the generator
+3. Access the formatted data from `datesheet_data.py`
 
-3. **Filtering the Datesheet**
-   - When a student selects courses from the dropdown, display the filtered timetable.
-   - Use Django’s `views.py` to process form data and filter results.
+## Data Structure
 
-4. **Displaying & Downloading**
-   - Show the customized datesheet in a clean, formatted table using Django templates.
-   - Provide a button to generate and download the filtered datesheet as a PDF.
+The generator creates a structured array in the following format:
 
-5. **Security & Access Control**
-   - Ensure only the admin can upload new files.
-   - Users should only see the processed output and not access the original file.
-   - Prevent direct access to uploaded files via URLs.
+```python
+datesheet_data = [
+   {"date": "YYYY-MM-DD", "time": "HH:MM", "subject": "Subject Name", "venue": "Exam Hall"},
+   # Additional entries...
+]
+```
 
-## Setup Instructions
+## Benefits
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/githubnext/FastDatesheetGenerator.git
-   cd FastDatesheetGenerator
-   ```
+- **Consistency**: Ensures data follows a standardized format
+- **Accessibility**: Makes schedule information easily accessible in your Python projects
+- **Maintainability**: Centralizes schedule data in a single, well-structured file
+- **Integration**: Simplifies integration with web applications, notification systems, and other tools
 
-2. Create and activate a virtual environment:
-   ```bash
-   python3 -m venv venv
-   source venv/bin/activate
-   ```
+## Getting Started
 
-3. Install the required dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
+Clone the repository and follow the instructions in the documentation to start generating structured datesheets for your scheduling needs.
 
-4. Apply migrations:
-   ```bash
-   python manage.py migrate
-   ```
+## License
 
-5. Create a superuser:
-   ```bash
-   python manage.py createsuperuser
-   ```
-
-6. Run the development server:
-   ```bash
-   python manage.py runserver
-   ```
-
-## Usage Instructions
-
-1. **Admin Uploads Datesheet**
-   - Log in to the admin panel.
-   - Upload the Excel file containing the datesheet.
-
-2. **Student Selects Courses**
-   - Visit the homepage.
-   - Select courses from the dropdown menu to filter the datesheet.
-
-3. **Download Customized Datesheet**
-   - Click the button to generate and download the filtered datesheet as a PDF.
+[License information here]
