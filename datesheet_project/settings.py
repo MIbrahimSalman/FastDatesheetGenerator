@@ -83,8 +83,12 @@ WSGI_APPLICATION = 'datesheet_project.wsgi.application'
 #     }
 # }
 
+db_url = config('DATABASE_URL', default='sqlite:///db.sqlite3')
+if not db_url:
+    db_url = 'sqlite:///db.sqlite3'
+
 DATABASES = {
-    'default': dj_database_url.config(default=config('DATABASE_URL', default='sqlite:///db.sqlite3'))
+    'default': dj_database_url.config(default=db_url)
 }
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
