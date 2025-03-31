@@ -23,7 +23,7 @@
         .container {
             width: 95%;
             max-width: 600px;
-            /* Fixed width for mobile */
+            /* Fluid width on large screens */
             background-color: #fff;
             padding: 15px;
             margin: 20px 0;
@@ -87,11 +87,10 @@
         .table-container {
             width: 100%;
             max-width: 600px;
-            /* Same as container width */
+            /* Matches container width */
             max-height: 400px;
-            /* Fixed height */
             overflow: auto;
-            /* Allow scrolling vertically if needed */
+            /* Allows vertical scrolling if needed */
             margin-top: 20px;
             border: 1px solid #ddd;
             border-radius: 4px;
@@ -101,7 +100,6 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            /* Let columns adjust naturally so that all text wraps as needed */
         }
 
         /* Add vertical grey lines between columns */
@@ -111,9 +109,7 @@
             text-align: center;
             border-bottom: 1px solid #ddd;
             border-right: 1px solid #ddd;
-            /* Allow text to wrap normally */
             white-space: normal;
-            /* Uniform font size for all cells */
             font-size: clamp(10px, 2vw, 14px);
         }
 
@@ -141,24 +137,13 @@
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            /* margin-right: 5px; */
             font-size: clamp(10px, 2vw, 14px);
         }
 
-        button {
+        /* Specific styling for delete button */
+        button.delete-btn {
             background-color: #dc3545;
             /* Red for delete button */
-            color: #fff;
-            align-items: center;
-            display: flex;
-            justify-content: center;
-            text-align: center;
-            padding: 8px 12px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: clamp(10px, 2vw, 14px);
-            /* Fixed width for delete button */
         }
 
         button:hover,
@@ -166,7 +151,7 @@
             background-color: #0056b3;
         }
 
-        /* Responsive adjustments for very small screens */
+        /* Responsive adjustments */
         @media (max-width: 600px) {
             .container {
                 width: 90%;
@@ -193,13 +178,14 @@
         }
     </style>
     <script>
+        // Use relative URL for search endpoint to avoid NoReverseMatch errors
         function searchCourses() {
             const query = document.getElementById('searchInput').value;
             if (query.length === 0) {
                 document.getElementById('suggestions').innerHTML = "";
                 return;
             }
-            fetch("{% url 'search_courses' %}?query=" + encodeURIComponent(query))
+            fetch("/search_courses/?query=" + encodeURIComponent(query))
                 .then(response => response.json())
                 .then(data => {
                     let suggestionBox = document.getElementById('suggestions');
@@ -225,7 +211,8 @@
         function addExam(course) {
             const form = document.createElement('form');
             form.method = "post";
-            form.action = "{% url 'add_exam' %}";
+            // Use a relative URL for the add_exam endpoint
+            form.action = "/add_exam/";
             const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
             form.innerHTML = `
                 <input type="hidden" name="day" value="${course.day}">
@@ -273,12 +260,12 @@
                         <td>{{ exam.course_code }}</td>
                         <td>{{ exam.course_name }}</td>
                         <td>
-                            <form method="post" action="{% url 'delete_exam' %}">
+                            <form method="post" action="/delete_exam/">
                                 {% csrf_token %}
                                 <input type="hidden" name="date" value="{{ exam.date }}">
                                 <input type="hidden" name="time" value="{{ exam.time }}">
                                 <input type="hidden" name="course_code" value="{{ exam.course_code }}">
-                                <button type="submit">Delete</button>
+                                <button type="submit" class="delete-btn">Delete</button>
                             </form>
                         </td>
                     </tr>
@@ -291,8 +278,7 @@
         {% endif %}
 
         <p style="text-align: center; margin-top: 20px;">
-            <a href="{% url 'download_datesheet' %}" style="text-decoration: none; color: #007bff;">Download PDF
-                Datesheet</a>
+            <a href="/download/" style="text-decoration: none; color: #007bff;">Download PDF Datesheet</a>
         </p>
         <!-- Hidden CSRF token for AJAX form submissions -->
         <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">

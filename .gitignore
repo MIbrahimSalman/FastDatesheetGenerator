@@ -1,15 +1,11 @@
-# Python cache
-__pycache__/
+generate_datesheet_data.py
+datesheet-mid2.xlsx
+
+#env
+*.venv
+*.env
+.env
+
+#.pyc
 *.pyc
 *.pyo
-*.pyd
-
-# Virtual environments
-venv/
-.env/
-.venv/
-env/
-
-# Django
-*.log
-db.sqlite3
