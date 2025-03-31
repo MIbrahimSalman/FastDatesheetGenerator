@@ -4,3 +4,4 @@ reportlab>=3.5.0
 xhtml2pdf>=0.2.5
 dj-database-url
 python-decouple
+psycopg2-binary
