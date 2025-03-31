@@ -57,7 +57,7 @@ def clean_datesheet(file_path):
                 })
     return courses
 
-@login_required
+# @login_required
 def upload_datesheet(request):
     if request.method == 'POST':
         form = DatesheetUploadForm(request.POST, request.FILES)
