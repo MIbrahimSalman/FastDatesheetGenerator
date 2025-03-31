@@ -10,6 +10,7 @@
         body {
             font-family: sans-serif;
             background-color: #f0f8ff;
+            /* Light blue background */
             margin: 0;
             padding: 0;
             display: flex;
@@ -22,24 +23,24 @@
         .container {
             width: 95%;
             max-width: 600px;
+            /* Fixed width for mobile */
             background-color: #fff;
-            padding: 1rem;
-            margin: 1.25rem 0;
-            border-radius: 0.5rem;
-            box-shadow: 0 0 0.625rem rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
         h1 {
             text-align: center;
             color: #007bff;
-            font-size: clamp(1.2rem, 4vw, 1.5rem);
+            font-size: 1.5em;
         }
 
         h2 {
             color: #007bff;
-            margin-top: 1.25rem;
+            margin-top: 20px;
             text-align: center;
-            font-size: clamp(1rem, 3vw, 1.25rem);
         }
 
         /* Search box styling */
@@ -52,32 +53,30 @@
 
         #searchInput {
             width: 100%;
-            padding: 0.5rem;
+            padding: 8px;
             border: 1px solid #ccc;
-            border-radius: 0.25rem;
+            border-radius: 4px;
             box-sizing: border-box;
-            font-size: clamp(0.9rem, 2vw, 1rem);
         }
 
         #suggestions {
             border: 1px solid #ccc;
-            max-height: 12.5rem;
+            max-height: 200px;
             overflow-y: auto;
             position: absolute;
             background-color: #fff;
             width: 100%;
             z-index: 1000;
             border-top: none;
-            border-radius: 0 0 0.25rem 0.25rem;
+            border-radius: 0 0 4px 4px;
         }
 
         .suggestion-item {
-            padding: 0.5rem;
+            padding: 8px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             cursor: pointer;
-            font-size: clamp(0.8rem, 2vw, 1rem);
         }
 
         .suggestion-item:hover {
@@ -88,61 +87,40 @@
         .table-container {
             width: 100%;
             max-width: 600px;
+            /* Same as container width */
+            max-height: 400px;
+            /* Fixed height */
             overflow: auto;
-            margin-top: 1.25rem;
+            /* Allow scrolling vertically if needed */
+            margin-top: 20px;
             border: 1px solid #ddd;
-            border-radius: 0.25rem;
+            border-radius: 4px;
         }
 
         /* Table styling */
         table {
             width: 100%;
             border-collapse: collapse;
-            table-layout: fixed;
-            /* Forces columns per colgroup widths */
+            /* Let columns adjust naturally so that all text wraps as needed */
         }
 
-        /* Define column widths using colgroup */
-        colgroup col:nth-child(1) {
-            width: 15%;
-        }
-
-        /* Day */
-        colgroup col:nth-child(2) {
-            width: 15%;
-        }
-
-        /* Date */
-        colgroup col:nth-child(3) {
-            width: 15%;
-        }
-
-        /* Time */
-        colgroup col:nth-child(4) {
-            width: 10%;
-        }
-
-        /* Course Code */
-        colgroup col:nth-child(5) {
-            width: 25%;
-        }
-
-        /* Course Name */
-        colgroup col:nth-child(6) {
-            width: 15%;
-        }
-
-        /* Action */
-
+        /* Add vertical grey lines between columns */
         th,
         td {
-            padding: 0.5rem;
+            padding: 8px;
             text-align: center;
-            /* Center-align text */
             border-bottom: 1px solid #ddd;
-            white-space: nowrap;
-            /* Use a responsive font size that can shrink further */
-            font-size: clamp(0.5rem, 1vw, 0.8rem);
+            border-right: 1px solid #ddd;
+            /* Allow text to wrap normally */
+            white-space: normal;
+            /* Uniform font size for all cells */
+            font-size: clamp(10px, 2vw, 14px);
+        }
+
+        /* Remove right border for last cell in each row */
+        th:last-child,
+        td:last-child {
+            border-right: none;
         }
 
         th {
@@ -159,11 +137,28 @@
         .add-btn {
             background-color: #007bff;
             color: #fff;
-            padding: 0.5rem 0.75rem;
+            padding: 8px 12px;
             border: none;
-            border-radius: 0.25rem;
+            border-radius: 4px;
             cursor: pointer;
-            font-size: clamp(0.5rem, 1vw, 0.8rem);
+            /* margin-right: 5px; */
+            font-size: clamp(10px, 2vw, 14px);
+        }
+
+        button {
+            background-color: #dc3545;
+            /* Red for delete button */
+            color: #fff;
+            align-items: center;
+            display: flex;
+            justify-content: center;
+            text-align: center;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: clamp(10px, 2vw, 14px);
+            /* Fixed width for delete button */
         }
 
         button:hover,
@@ -175,27 +170,25 @@
         @media (max-width: 600px) {
             .container {
                 width: 90%;
-                padding: 0.75rem;
+                padding: 10px;
             }
 
             h1 {
-                font-size: clamp(1rem, 4vw, 1.3rem);
+                font-size: 1.3em;
             }
 
             h2 {
-                font-size: clamp(0.9rem, 3vw, 1.1rem);
+                font-size: 1.1em;
             }
 
             th,
             td {
-                padding: 0.4rem;
-                font-size: clamp(0.5rem, 1vw, 0.8rem);
+                padding: 6px;
             }
 
             button,
             .add-btn {
-                padding: 0.4rem 0.6rem;
-                font-size: clamp(0.5rem, 1vw, 0.8rem);
+                padding: 6px 10px;
             }
         }
     </style>
@@ -261,14 +254,6 @@
         {% if selected_exams %}
         <div class="table-container">
             <table>
-                <colgroup>
-                    <col style="width:15%;">
-                    <col style="width:15%;">
-                    <col style="width:15%;">
-                    <col style="width:15%;">
-                    <col style="width:25%;">
-                    <col style="width:15%;">
-                </colgroup>
                 <thead>
                     <tr>
                         <th>Day</th>
@@ -305,7 +290,7 @@
         <p>No exams selected.</p>
         {% endif %}
 
-        <p style="text-align: center; margin-top: 1.25rem;">
+        <p style="text-align: center; margin-top: 20px;">
             <a href="{% url 'download_datesheet' %}" style="text-decoration: none; color: #007bff;">Download PDF
                 Datesheet</a>
         </p>
