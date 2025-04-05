@@ -6,6 +6,7 @@ from io import BytesIO
 from django.views.decorators.http import require_POST
 from django.template.loader import get_template
 from xhtml2pdf import pisa
+from datesheet_app.utils import parse_start_time
 
 # Import the static datesheet data
 from datesheet_data import DATESHEET
@@ -35,7 +36,7 @@ def search_courses(request):
 def add_exam(request):
     exam = {
         'day': request.POST.get('day'),
-        'date': request.POST.get('date'),
+        'date': request.POST.get('date'),  # Expected format "YYYY-MM-DD"
         'time': request.POST.get('time'),
         'course_code': request.POST.get('course_code'),
         'course_name': request.POST.get('course_name'),
@@ -43,9 +44,9 @@ def add_exam(request):
     selected = request.session.get('selected_courses', [])
     if exam not in selected:
         selected.append(exam)
-        selected = sorted(selected, key=lambda x: (x["date"], x["time"]))
+        # Sort first by date (YYYY-MM-DD sorts lexically) and then by the parsed start time.
+        selected = sorted(selected, key=lambda x: (x["date"], parse_start_time(x["time"])))
         request.session['selected_courses'] = selected
-    # Change redirect to use a URL name that exists, e.g., 'home'
     return redirect('home')
 
 @require_POST

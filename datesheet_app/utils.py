@@ -1,6 +1,22 @@
 import pandas as pd
 from datetime import datetime
 
+from datetime import datetime
+
+def parse_start_time(time_range):
+    """
+    Extracts and parses the start time from a 12-hour formatted time range.
+    Example: "02:00 PM - 03:00 PM" returns a time object for 2:00 PM.
+    If parsing fails, returns a default time of 00:00.
+    """
+    try:
+        # Split on the delimiter " - " and take the first part.
+        start_time_str = time_range.split(" - ")[0]
+        return datetime.strptime(start_time_str, "%I:%M %p").time()
+    except Exception:
+        return datetime.strptime("00:00 AM", "%I:%M %p").time()
+
+
 def convert_time_range(time_str):
     """
     Converts a time range from 24-hour format to 12-hour format.
