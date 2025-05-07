@@ -13,7 +13,6 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 import os
 from decouple import config
-import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -24,8 +23,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', default=False, cast=bool)
-SECRET_KEY = config('SECRET_KEY')
+DEBUG = config('DEBUG', default=True, cast=bool)
+SECRET_KEY = config('SECRET_KEY', default='django-insecure-default-key-for-development')
 
 ALLOWED_HOSTS = ["127.0.0.1", "localhost", "192.168.56.1", "192.168.42.52", "192.168.18.17", '.vercel.app']
 
@@ -76,22 +75,14 @@ WSGI_APPLICATION = 'datesheet_project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
-db_url = config('DATABASE_URL', default='sqlite:///db.sqlite3')
-if not db_url:
-    db_url = 'sqlite:///db.sqlite3'
-
+# Using SQLite for simplicity
 DATABASES = {
-    'default': dj_database_url.config(default=db_url)
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
-# import os
-print("DATABASE_URL:", os.getenv("DATABASE_URL"))
+
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 

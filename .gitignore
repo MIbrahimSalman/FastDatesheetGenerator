@@ -1,5 +1,6 @@
 generate_datesheet_data.py
 datesheet-mid2.xlsx
+final-date-sheet.xls
 
 #env
 *.venv
@@ -10,4 +11,13 @@ datesheet-mid2.xlsx
 *.pyc
 *.pyo
 
-__pycache__
+# Python cache
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*$py.class
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
