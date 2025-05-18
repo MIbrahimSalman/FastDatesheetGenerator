@@ -1,20 +1,19 @@
 import pandas as pd
 from datetime import datetime
 
-from datetime import datetime
-
 def parse_start_time(time_range):
     """
     Extracts and parses the start time from a 12-hour formatted time range.
     Example: "02:00 PM - 03:00 PM" returns a time object for 2:00 PM.
-    If parsing fails, returns a default time of 00:00.
+    If parsing fails, returns a default time of 12:00 AM (midnight).
     """
     try:
         # Split on the delimiter " - " and take the first part.
         start_time_str = time_range.split(" - ")[0]
         return datetime.strptime(start_time_str, "%I:%M %p").time()
     except Exception:
-        return datetime.strptime("00:00 AM", "%I:%M %p").time()
+        # Use 12:00 AM instead of 00:00 AM for midnight in 12-hour format
+        return datetime.strptime("12:00 AM", "%I:%M %p").time()
 
 
 def convert_time_range(time_str):
@@ -48,7 +47,7 @@ def clean_datesheet(file_path):
       - Row 2: Time row; each course column pair (code, name) shares the same time from this row.
       - Row 3+: Data rows.
     The date is converted to a string (YYYY-MM-DD) and missing values are replaced with empty strings.
-    The time is converted from a 24-hour range (e.g., "14:00 - 15:00") to a 12-hour range (e.g., "02:00 PM - 03:00 PM").
+    Time values are already in 12-hour format (e.g., "02:00 PM - 03:00 PM") and don't need conversion.
     """
     df = pd.read_excel(file_path, header=None, sheet_name="Complete")
     # Use the third row (index 2) for time values
@@ -74,9 +73,8 @@ def clean_datesheet(file_path):
                 course_name = row[j+1] if j+1 < ncols and pd.notna(row[j+1]) else ""
                 time_slot = ""
                 if j+1 < ncols and pd.notna(time_row[j+1]):
-                    # Assume the time is given as a string like "14:00 - 15:00"
-                    raw_time = str(time_row[j+1]).strip()
-                    time_slot = convert_time_range(raw_time)
+                    # Time is already in 12-hour format, no conversion needed
+                    time_slot = str(time_row[j+1]).strip()
                 courses.append({
                     "day": str(day).strip(),
                     "date": date_str,
